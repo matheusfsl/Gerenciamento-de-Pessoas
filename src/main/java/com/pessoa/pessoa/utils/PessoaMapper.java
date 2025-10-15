@@ -28,6 +28,7 @@ public class PessoaMapper {
         pessoaModel.setIdade(pessoaForm.getIdade());
         pessoaModel.setCorFavorita(pessoaForm.getCorFavorita());
         pessoaModel.setEstadoCivil(pessoaForm.getEstadoCivil());
+        pessoaModel.setEstado(pessoaForm.getEstado());
         pessoaModel.setSalario(pessoaForm.getSalario());
         pessoaModel.setSexo(pessoaForm.getSexo());
         pessoaModel.setProfissao(pessoaForm.getProfissao());
@@ -49,11 +50,13 @@ public class PessoaMapper {
         pessoaDto.setAltura(pessoaModel.getAltura());
         pessoaDto.setProfissao(pessoaModel.getProfissao());
         pessoaDto.setPeso(pessoaModel.getPeso());
-        pessoaDto.setEmail(pessoaDto.getEmail());
+        pessoaDto.setEmail(pessoaModel.getEmail());
         pessoaDto.setSexo(pessoaModel.getSexo());
         pessoaDto.setIdade(pessoaModel.getIdade());
         pessoaDto.setCorFavorita(pessoaModel.getCorFavorita());
         pessoaDto.setEstado(pessoaModel.getEstado());
+        pessoaDto.setEstadoCivil(pessoaModel.getEstadoCivil());
+
 
         return pessoaDto;
     }
@@ -68,6 +71,7 @@ public class PessoaMapper {
         pessoaModel.setIdade(pessoaForm.getIdade());
         pessoaModel.setCorFavorita(pessoaForm.getCorFavorita());
         pessoaModel.setEstadoCivil(pessoaForm.getEstadoCivil());
+        pessoaModel.setEstado(pessoaForm.getEstado());
         pessoaModel.setSalario(pessoaForm.getSalario());
         pessoaModel.setSexo(pessoaForm.getSexo());
         pessoaModel.setProfissao(pessoaForm.getProfissao());
@@ -75,6 +79,8 @@ public class PessoaMapper {
 
         return pessoaModel;
     }
+
+
 
    public Set<PessoaDto> setModelToSetDto(Set<PessoaModel> pessoaModels){
         if (pessoaModels == null || pessoaModels.isEmpty()){

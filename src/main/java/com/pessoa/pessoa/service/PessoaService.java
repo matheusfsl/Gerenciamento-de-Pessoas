@@ -15,7 +15,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class PessoaService {
@@ -95,4 +96,58 @@ public class PessoaService {
         }
     return pessoaMapper.setModelToSetDto(pessoaModels);
     }
+
+    @Transactional
+    public Set<PessoaDto> createPessoaLote (List<PessoaForm> pessoaFormList){
+        List<PessoaModel> pessoaModelsList = pessoaFormList.stream()
+                .filter(form -> pessoaRepository.findByEmailContainingIgnoreCase(form.getEmail()).isEmpty())
+                .map(pessoaMapper::formToModel)
+                .peek(model -> model.setActive(true))
+                .toList();
+        List<PessoaModel> saved = pessoaRepository.saveAll(pessoaModelsList);
+
+        return saved.stream()
+                .map(pessoaMapper::modelToDto)
+                .collect(Collectors.toSet());
+    }
+
+    @Transactional
+    public Set<PessoaDto> updatePessoaLote(List<PessoaForm> pessoaFormList) {
+        List<PessoaModel> pessoasAtualizadas = new ArrayList<>();
+
+        for (PessoaForm form : pessoaFormList) {
+            try {
+                PessoaModel existente = getPessoaModelByEmail(form.getEmail());
+                pessoaMapper.updateFormToModel(form, existente);
+
+                pessoasAtualizadas.add(existente);
+            } catch (PessoaNotFoundExeception e) {
+                throw new PessoaNotFoundExeception(
+                        String.format("Pessoa(s) '%s' não encontra(s)", form.getName())
+                );
+            }
+        }
+
+        List<PessoaModel> pessoasSalvas = pessoaRepository.saveAll(pessoasAtualizadas);
+
+        return pessoasSalvas.stream()
+                .map(pessoaMapper::modelToDto)
+                .collect(Collectors.toSet());
+    }
+    public void deletePessoaLote (Set<String> emails){
+        List<PessoaModel> emailsDelete = new ArrayList<>();
+        for (String email : emails ){
+            try {
+                PessoaModel pessoaExistente = getPessoaModelByEmail(email);
+                pessoaExistente.setActive(false);
+                emailsDelete.add(pessoaExistente);
+            }catch (PessoaNotFoundExeception e) {
+                throw new PessoaNotFoundExeception(
+                        String.format("Email(s) '%s' não encontra(s)", email)
+                );
+            }
+        }
+        List<PessoaModel> pessoasDeletadas = pessoaRepository.saveAll(emailsDelete);
+    }
+
 }
