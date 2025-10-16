@@ -20,6 +20,31 @@ public class PessoaController {
         this.pessoaService = pessoaService;
     }
 
+    @GetMapping("/{emailPessoa}")
+    public ResponseEntity<PessoaDto> getPessoa(@PathVariable String emailPessoa){
+        PessoaDto pessoadto = pessoaService.getPessoaByEmail(emailPessoa);
+        return ResponseEntity.ok(pessoadto);
+    }
+
+    @GetMapping("/{all}")
+    public ResponseEntity<Set<PessoaDto>> getAllPessoa (){
+        Set<PessoaDto> pessoaDtos = pessoaService.getAllPessoa();
+        return ResponseEntity.ok(pessoaDtos);
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<PessoaDto> createPessoa(@RequestBody PessoaForm pessoaForm){
+        PessoaDto pessoaDto = pessoaService.createPessoa(pessoaForm);
+        return ResponseEntity.status(HttpStatus.CREATED).body(pessoaDto);
+    }
+
+    @PutMapping("/{pessoaEmail}")
+    public ResponseEntity<PessoaDto> updatePessoa (@PathVariable String pessoaEmail, @RequestBody PessoaForm pessoaForm){
+        PessoaDto pessoaDto = pessoaService.updatePessoa(pessoaForm, pessoaEmail);
+        return ResponseEntity.ok(pessoaDto);
+    }
+
+
     @PostMapping("/lote")
     public ResponseEntity<Set<PessoaDto>> createComida(@RequestBody List<PessoaForm> pessoaFormList){
         Set<PessoaDto> pessoaDtos = pessoaService.createPessoaLote(pessoaFormList);
