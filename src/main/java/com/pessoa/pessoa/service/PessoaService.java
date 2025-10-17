@@ -36,6 +36,7 @@ public class PessoaService {
                 ));
     }
 
+
     public PessoaDto getPessoaByEmail(String email) {
         PessoaModel pessoaModel = getPessoaModelByEmail(email);
         return pessoaMapper.modelToDto(pessoaModel);
@@ -100,9 +101,7 @@ public class PessoaService {
     @Transactional
     public Set<PessoaDto> createPessoaLote (List<PessoaForm> pessoaFormList){
         List<PessoaModel> pessoaModelsList = pessoaFormList.stream()
-                .filter(form -> pessoaRepository.findByEmailContainingIgnoreCase(form.getEmail()).isEmpty())
                 .map(pessoaMapper::formToModel)
-                .peek(model -> model.setActive(true))
                 .toList();
         List<PessoaModel> saved = pessoaRepository.saveAll(pessoaModelsList);
 
@@ -148,6 +147,16 @@ public class PessoaService {
             }
         }
         List<PessoaModel> pessoasDeletadas = pessoaRepository.saveAll(emailsDelete);
+    }
+
+    public Set<PessoaDto> getAllBy(String nome, Double altura, Double peso, String estado){
+        Set<PessoaModel> pessoaModels = pessoaRepository.findByFilter(nome,altura,peso,estado);
+        if (pessoaModels == null ||pessoaModels.isEmpty()){
+            throw new PessoaNotFoundExeception(
+                    String.format("pessoas não encontradas ")
+            );
+        }
+        return pessoaMapper.setModelToSetDto(pessoaModels);
     }
 
 }

@@ -26,6 +26,18 @@ public class PessoaController {
         return ResponseEntity.ok(pessoadto);
     }
 
+    @GetMapping("/filtro")
+    public ResponseEntity<Set<PessoaDto>> getPessoasByFilters(
+            @RequestParam(required = false) String nome,
+            @RequestParam(required = false) Double altura,
+            @RequestParam(required = false) Double peso,
+            @RequestParam(required = false) String estado
+    ){
+        Set<PessoaDto> pessoas = pessoaService.getAllBy(nome, altura, peso, estado);
+        return ResponseEntity.ok(pessoas);
+    }
+
+
     @GetMapping("/{all}")
     public ResponseEntity<Set<PessoaDto>> getAllPessoa (){
         Set<PessoaDto> pessoaDtos = pessoaService.getAllPessoa();
